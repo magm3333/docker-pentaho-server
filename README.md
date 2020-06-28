@@ -59,6 +59,6 @@ Si deseas agregar nuevos drivers, solo debes usar el compando * docker cp*
 
 **Licencia**
 
-Creado por Mariano Alberto García Mattío en 2020
+Creado por Mariano Alberto García Mattío en 2020 (Twitter [@magm3333](https://twitter.com/magm3333))
 
 Licensed under the Apache License, Version 2.0
