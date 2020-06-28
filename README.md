@@ -23,7 +23,7 @@ docker build -t pentahoserver .
 ```
 docker run --name mipentahoserver -d -p 8080:8080 pentahoserver
 ```
-Puedes ver el log de tu contener de la siguiente manera:
+Puedes ver el log de tu contenedor de la siguiente manera:
 ```
 docker logs mipentahoserver
 ```
