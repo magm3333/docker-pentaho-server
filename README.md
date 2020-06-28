@@ -29,6 +29,23 @@ docker logs mipentahoserver
 ```
 Finalmente podrás disfrutar de tu Pentaho server accediendo a la url: *http://localhost:8080/pentaho* 
 
+**Actualizar o agregar drivers JDBC**
+Los drivers JDBC extra se encuentran en la carpeta /opt/pentaho-server/tomcat/lib dentro del contenedor, una vez ue tu contener se ha creado y está corriendo, puedes ver el contenido de la carpeta de la siguiente forma:
+```
+docker exec -it mipentahoserver bash -c "ls -lsh /opt/pentaho-server/tomcat/lib"
+```
+Se puede actualizar el driver de mysql de la siguiente forma:
+```
+docker cp ~/Descargas/mysql-connector-java-5.1.48-bin.jar  mipentahoserver:/opt/pentaho-server/tomcat/lib/mysql-connector-java-5.1.17.jar
+```
+En el caso anterior se descargó la versión 5.1.48 del driver y se colocó en ~/Descargas, finalmente se sobreescribió el driver existente a fin de no tener que eliminarlo, aunque te recomiendo hacerlo. 
+Ahora debes reinicisar el contenedor para que el nuevo driver comience a funcionar:
+```
+docker restart mipentahoserver
+```
+Si deseas agregar nuevos drivers, solo debes usar el compando * docker cp*
+
+
 **Agradecimientos**
 - La instalación del JDK se realiza con una pequeña modificación del script creado por [chrishantha](https://github.com/chrishantha/install-java)
 - A [Ubuntu Peronista](https://ubuntuperonista.blogspot.com/) por sus constantes aportes a la causa.
@@ -36,7 +53,6 @@ Finalmente podrás disfrutar de tu Pentaho server accediendo a la url: *http://l
 
 **TODO**
 - Ejemplo de cambio de Time Zone
-- Ejemplo de como agregar nuevos controladores JDBC
 - Agregar versiones anteriores
 
 ***
