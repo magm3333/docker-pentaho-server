@@ -23,6 +23,10 @@ docker build -t pentahoserver .
 ```
 docker run --name mipentahoserver -d -p 8080:8080 pentahoserver
 ```
+Puedes ver el log de tu contener de la siguiente manera:
+```
+docker logs mipentahoserver
+```
 Finalmente podrás disfrutar de tu Pentaho server accediendo a la url: *http://localhost:8080/pentaho* 
 
 **Agradecimientos**
