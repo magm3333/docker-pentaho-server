@@ -16,7 +16,7 @@ docker run --name mipentahoserver -d -p 8080:8080 magm3333/pentahoserver
 
 **Crear la imagen**
 Una vez clonado este repositorio deberá:
-- Descargar la versión 8 del JDK de Oracle y asegurate que poseá este nombre: *jdk-8-linux-x64.tar.gz* cuando lo descargues, se puede encontrar [aquí](https://www.oracle.com/java/technologies/javase/javase8u211-later-archive-downloads.html), tanmbién [aquí](https://gist.github.com/hgomez/9650687) hay una serie de comandos para descargarlo con wget, por ejemplo.
+- Descargar la versión 8 del JDK de Oracle y asegurate que poseá este nombre: *jdk-8-linux-x64.tar.gz* cuando lo descargues, se puede encontrar [aquí](https://www.oracle.com/java/technologies/javase/javase8u211-later-archive-downloads.html), también [aquí](https://gist.github.com/hgomez/9650687) hay una serie de comandos para descargarlo con wget, por ejemplo.
 > wget https://github.com/frekele/oracle-java/releases/download/8u201-b09/jdk-8u201-linux-x64.tar.gz -O jdk-8-linux-x64.tar.gz 
 - Descargar Pentaho Server CE, asegurate que posea el nombre *pentaho-server-ce.zip* cuando lo descargues, puedes utilizar este [enlace](https://razaoinfo.dl.sourceforge.net/project/pentaho/Pentaho%209.0/server/pentaho-server-ce-9.0.0.0-423.zip), por ejemplo: 
 > wget https://razaoinfo.dl.sourceforge.net/project/pentaho/Pentaho%209.0/server/pentaho-server-ce-9.0.0.0-423.zip -O pentaho-server-ce.zip
