@@ -55,7 +55,7 @@ Si deseas agregar nuevos drivers, solo debes usar el compando * docker cp*
 
 **Agradecimientos**
 - La instalación del JDK se realiza con una pequeña modificación del script creado por [chrishantha](https://github.com/chrishantha/install-java
-- A mi queridx amigx [Darío Bernabeu](http://troyanx.com/Hefesto/bernabeu_dario.html), compañerx de aventuras, aprendizajes y demás cosas importantes de la vida.
+- A mi queridx amigx [Darío Bernabeu](https://troyanx.com/Hefesto/bernabeu-dario.html), compañerx de aventuras, aprendizajes y demás cosas importantes de la vida.
 - A [Ubuntu Peronista](https://ubuntuperonista.blogspot.com/) por sus constantes aportes a la causa.
 - Esta imagen está basada en *ubuntu:18.04*
 
