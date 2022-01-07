@@ -27,13 +27,34 @@ docker build -t pentahoserver .
 ```
 
 **Crear un contenedor**
+
+En base a tu imagen local
+
 ```
 docker run --name mipentahoserver -d -p 8080:8080 pentahoserver
 ```
+
+En base a la imagen de dockerhub
+
+Ultima versión:
+
+```
+docker run --name pentahoserver91 -d -p 8080:8080 magm3333/pentahoserver
+```
+
+Versión específica
+
+```
+docker run --name pentahoserver91 -d -p 8080:8080 magm3333/pentahoserver:9.1ce
+```
+
+
 Puedes ver el log de tu contenedor de la siguiente manera:
+
 ```
 docker logs mipentahoserver
 ```
+
 Finalmente podrás disfrutar de tu Pentaho server accediendo a la url: *http://localhost:8080/pentaho* 
 
 **Actualizar o agregar drivers JDBC**
@@ -52,6 +73,12 @@ docker restart mipentahoserver
 ```
 Si deseas agregar nuevos drivers, solo debes usar el compando * docker cp*
 
+**Aclaraciones**
+
+La versión 9.1ce es la más pulida, ya se encuentran instalados los pluguins:
+
+1) Pivot4J
+2) Visualizer (en español), se puede ver un excelente tutorial introductorio aquí: (https://www.linkedin.com/pulse/visualizer-dashboards-mondrian-olap-en-pentaho-dario-bernabeu/)
 
 **Agradecimientos**
 - La instalación del JDK se realiza con una pequeña modificación del script creado por [chrishantha](https://github.com/chrishantha/install-java
