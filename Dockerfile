@@ -24,6 +24,8 @@ RUN mv /tmp/jsf-api-1.1_02.jar /opt/pentaho-server/tomcat/webapps/pentaho/WEB-IN
 RUN cp /tmp/ImportHandlerMimeTypeDefinitions.xml /opt/pentaho-server/pentaho-solutions/system
 RUN cp /tmp/importExport.xml /opt/pentaho-server/pentaho-solutions/system
 
+RUN COPY jtds-1.2.5.jar /opt/pentaho-server/tomcat/lib
+
 RUN sed -i -e "s|requestParameterAuthenticationEnabled=false|requestParameterAuthenticationEnabled=true|g" /opt/pentaho-server/pentaho-solutions/system/security.properties
 
 #Eliminar Drivers BigData (probado solo en versión 9)
