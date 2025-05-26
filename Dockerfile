@@ -1,10 +1,13 @@
-FROM ubuntu:18.04
+FROM ubuntu:24.04
 MAINTAINER Mariano Alberto García Mattío
 
 ENV PENTAHO_SERVER /opt/pentaho-server
+ENV PATH="${PENTAHO_SERVER}:${PATH}"
 
-RUN apt update
-RUN apt install wget unzip -y
+RUN apt update && apt install -y wget unzip && rm -rf /var/lib/apt/lists/*
+RUN apt-get purge -y manpages && \
+    rm -rf /usr/share/man /usr/share/doc /usr/share/info
+
 WORKDIR /tmp
 COPY install-java.sh .
 COPY jdk-8-linux-x64.tar.gz .
@@ -24,7 +27,7 @@ RUN mv /tmp/jsf-api-1.1_02.jar /opt/pentaho-server/tomcat/webapps/pentaho/WEB-IN
 RUN cp /tmp/ImportHandlerMimeTypeDefinitions.xml /opt/pentaho-server/pentaho-solutions/system
 RUN cp /tmp/importExport.xml /opt/pentaho-server/pentaho-solutions/system
 
-RUN COPY jtds-1.2.5.jar /opt/pentaho-server/tomcat/lib
+COPY jtds-1.2.5.jar /opt/pentaho-server/tomcat/lib
 
 RUN sed -i -e "s|requestParameterAuthenticationEnabled=false|requestParameterAuthenticationEnabled=true|g" /opt/pentaho-server/pentaho-solutions/system/security.properties
 
@@ -47,8 +50,7 @@ RUN rm /tmp/*.xml
 RUN chmod +x ${PENTAHO_SERVER}/*.sh
 RUN chmod +x ${PENTAHO_SERVER}/tomcat/bin/*.sh
 
-RUN PATH="${PENTAHO_SERVER}:$PATH"
-RUN export PATH
+RUN rm -rf /tmp/* /var/tmp/*
 
 EXPOSE 8080
 
