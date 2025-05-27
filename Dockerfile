@@ -1,7 +1,7 @@
 FROM ubuntu:24.04
-MAINTAINER Mariano Alberto García Mattío
+LABEL maintainer="Mariano Alberto García Mattío"
 
-ENV PENTAHO_SERVER /opt/pentaho-server
+ENV PENTAHO_SERVER="/opt/pentaho-server"
 ENV PATH="${PENTAHO_SERVER}:${PATH}"
 
 RUN apt update && apt install -y wget unzip && rm -rf /var/lib/apt/lists/*
