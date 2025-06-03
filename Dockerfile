@@ -4,56 +4,69 @@ LABEL maintainer="Mariano Alberto García Mattío"
 ENV PENTAHO_SERVER="/opt/pentaho-server"
 ENV PATH="${PENTAHO_SERVER}:${PATH}"
 
-RUN apt update && apt install -y wget unzip && rm -rf /var/lib/apt/lists/*
+# Instalar herramientas básicas y limpiar apt
+RUN apt update && apt install -y wget unzip fontconfig fonts-dejavu && rm -rf /var/lib/apt/lists/*
+
+# Eliminar documentación innecesaria
 RUN apt-get purge -y manpages && \
     rm -rf /usr/share/man /usr/share/doc /usr/share/info
 
+# Crear usuario y grupo pentaho
+ARG PUID=1010
+ARG PGID=1010
+
+# Crear grupo solo si no existe, con verificación de nombre y GID
+RUN groupadd -g ${PGID} pentaho || true && \
+    useradd -u ${PUID} -g ${PGID} -m -s /bin/bash pentaho || true
+
 WORKDIR /tmp
-COPY install-java.sh .
-COPY jdk-8-linux-x64.tar.gz .
-COPY pentaho-server-ce.zip .
-COPY pivot4j-pentaho-1.0-plugin.zip.1 ./pivot4j-pentaho-1.0-plugin.zip
-COPY datafor.zip.1 ./datafor.zip
-COPY jsf-api-1.1_02.jar .
-COPY ImportHandlerMimeTypeDefinitions.xml .
-COPY importExport.xml .
-COPY jcifs.jar .
+
+# Copiar archivos de instalación con ownership directo para pentaho
+COPY --chown=pentaho:pentaho install-java.sh .
+COPY --chown=pentaho:pentaho jdk-8-linux-x64.tar.gz .
+COPY --chown=pentaho:pentaho pentaho-server-ce.zip .
+COPY --chown=pentaho:pentaho pivot4j-pentaho-1.0-plugin.zip.1 ./pivot4j-pentaho-1.0-plugin.zip
+COPY --chown=pentaho:pentaho datafor.zip.1 ./datafor.zip
+COPY --chown=pentaho:pentaho jsf-api-1.1_02.jar .
+COPY --chown=pentaho:pentaho ImportHandlerMimeTypeDefinitions.xml .
+COPY --chown=pentaho:pentaho importExport.xml .
+COPY --chown=pentaho:pentaho jcifs.jar .
+COPY --chown=pentaho:pentaho jtds-1.2.5.jar .
+
+# Descomprimir e instalar componentes
+RUN ./install-java.sh -f jdk-8-linux-x64.tar.gz && \
+    unzip pentaho-server-ce.zip -d /opt && \
+    unzip pivot4j-pentaho-1.0-plugin.zip -d ${PENTAHO_SERVER}/pentaho-solutions/system && \
+    unzip datafor.zip -d ${PENTAHO_SERVER}/pentaho-solutions/system && \
+    mv jsf-api-1.1_02.jar ${PENTAHO_SERVER}/tomcat/webapps/pentaho/WEB-INF/lib && \
+    mv jcifs.jar ${PENTAHO_SERVER}/tomcat/lib && \
+    mv ImportHandlerMimeTypeDefinitions.xml ${PENTAHO_SERVER}/pentaho-solutions/system && \
+    mv importExport.xml ${PENTAHO_SERVER}/pentaho-solutions/system && \
+    mv jtds-1.2.5.jar ${PENTAHO_SERVER}/tomcat/lib 
+    
+#    rm ${PENTAHO_SERVER}/pentaho-solutions/system/kettle/plugins/pentaho-big-data-plugin/*.zip
+
+#    rm ${PENTAHO_SERVER}/pentaho-solutions/ADDITIONAL-FILES/drivers/*.kar && \
 
 
-RUN ./install-java.sh -f jdk-8-linux-x64.tar.gz
-RUN unzip /tmp/pentaho-server-ce.zip -d /opt
-RUN unzip /tmp/pivot4j-pentaho-1.0-plugin.zip -d /opt/pentaho-server/pentaho-solutions/system
-RUN unzip /tmp/datafor.zip -d /opt/pentaho-server/pentaho-solutions/system
-RUN mv /tmp/jsf-api-1.1_02.jar /opt/pentaho-server/tomcat/webapps/pentaho/WEB-INF/lib
-RUN mv /tmp/jcifs.jar /opt/pentaho-server/tomcat/lib
-RUN cp /tmp/ImportHandlerMimeTypeDefinitions.xml /opt/pentaho-server/pentaho-solutions/system
-RUN cp /tmp/importExport.xml /opt/pentaho-server/pentaho-solutions/system
+# Habilitar autenticación por parámetro
+# Desactivar prompt inicial y modo daemon
+# Asignar permisos correctos a pentaho
+# Hacer ejecutables los scripts necesarios
+# Limpiar archivos temporales
+RUN sed -i -e "s|requestParameterAuthenticationEnabled=false|requestParameterAuthenticationEnabled=true|g" ${PENTAHO_SERVER}/pentaho-solutions/system/security.properties && \
+    rm ${PENTAHO_SERVER}/promptuser.sh && \
+    sed -i 's/\(-Xmx6144m\)/\1 -Djava.awt.headless=true/' ${PENTAHO_SERVER}/start-pentaho.sh && \
+    sed -i -e 's/\(exec ".*"\) start/\1 run/' ${PENTAHO_SERVER}/tomcat/bin/startup.sh && \
+    chown -R pentaho:pentaho /opt && \
+    chown -R pentaho:pentaho /tmp && \
+    chown -R pentaho:pentaho /home/pentaho && \
+    chmod +x ${PENTAHO_SERVER}/*.sh && \
+    chmod +x ${PENTAHO_SERVER}/tomcat/bin/*.sh && \
+    rm -rf /tmp/* /var/tmp/*
 
-COPY jtds-1.2.5.jar /opt/pentaho-server/tomcat/lib
-
-RUN sed -i -e "s|requestParameterAuthenticationEnabled=false|requestParameterAuthenticationEnabled=true|g" /opt/pentaho-server/pentaho-solutions/system/security.properties
-
-#Eliminar Drivers BigData (probado solo en versión 9)
-#RUN rm ${PENTAHO_SERVER}/pentaho-solutions/ADDITIONAL-FILES/drivers/*.kar
-#RUN rm ${PENTAHO_SERVER}/pentaho-solutions/system/kettle/plugins/pentaho-big-data-plugin/*.zip
-
-#Inhabilitar el prompt inicial por las actualizaciones
-RUN rm ${PENTAHO_SERVER}/promptuser.sh
-#Inhabilitar el modo demon de Tomcat
-RUN sed -i -e 's/\(exec ".*"\) start/\1 run/' ${PENTAHO_SERVER}/tomcat/bin/startup.sh
-
-RUN rm /tmp/pentaho-server-ce.zip
-RUN rm /tmp/jdk-8-linux-x64.tar.gz
-RUN rm /tmp/install-java.sh
-RUN rm /tmp/pivot4j-pentaho-1.0-plugin.zip
-RUN rm /tmp/datafor.zip
-RUN rm /tmp/*.xml
-
-RUN chmod +x ${PENTAHO_SERVER}/*.sh
-RUN chmod +x ${PENTAHO_SERVER}/tomcat/bin/*.sh
-
-RUN rm -rf /tmp/* /var/tmp/*
+# Cambiar a usuario no root
+USER pentaho
 
 EXPOSE 8080
-
 ENTRYPOINT ["/opt/pentaho-server/start-pentaho.sh"]

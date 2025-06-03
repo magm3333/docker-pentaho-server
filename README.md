@@ -11,8 +11,9 @@ Cabe aclarar que Pentaho Server es uno de los componentes de la Suite Pentaho (a
 
 **Crear y ejecutar contenedor**
 ```
-docker run --name mipentahoserver -d -p 8080:8080 magm3333/pentahoserver
+docker run --name mipentahoserver -e PUID=$(id -u) -e PGID=$(id -g) -d -p 8080:8080 magm3333/pentahoserver
 ```
+| `-e PUID=$(id -u) -e PGID=$(id -g)` los usamos para mapear el usuario interno del contenedor con el usuario actual, por si se mapean volumenes
 
 **Crear la imagen**
 Una vez clonado este repositorio deberá:
